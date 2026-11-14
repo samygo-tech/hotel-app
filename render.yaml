@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: hotel-booking
+    runtime: node
+    plan: starter            # a persistent disk requires a paid plan
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /healthz
+    autoDeploy: true         # redeploy on every push to the connected branch
+    disk:
+      name: hotel-data
+      mountPath: /var/data   # the SQLite file lives here and survives deploys
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: NODE_ENV
+        value: production
+      - key: DB_PATH
+        value: /var/data/hotel.db
+      - key: ADMIN_PASSWORD
+        sync: false          # Render asks you for this value when you create the service
+      - key: SESSION_SECRET
+        generateValue: true
